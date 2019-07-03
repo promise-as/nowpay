@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>收银台</title>
+  <!--<link rel="shortcut icon" href="images/ico/logo_2.png" type="image/x-icon"/>-->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/index.css">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+</head>
+<body>
+<div id="app">
+  <!--头部-->
+  <div class="header">
+    <div class="container">
+      <div class="header-logo">
+        <a href="./index.html" class="logo">NOWPAY</a>
+        <em class="logo-line"></em>
+        <div class="logo-text">全球领先的数字资产兑换平台</div>
+      </div>
+      <div class="header-phone">
+        <i class="phone-icon"></i>
+        <div class="phone-number">020-253 2564</div>
+      </div>
+    </div>
+    <div class="header-line">
+      <div class="container">
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
+  <!--主体-->
+  <div class="cashier-desk-main">
+    <div class="container">
+      <form action="#">
+        <!--蒙版-->
+        <div class="main-mask" v-if="isRemind">
+          <div class="mask"></div>
+
+          <div class="wrap" v-if="haveTransfer">
+            <div class="modal">
+              <div class="model-close">
+                <i class="close-btn" @click="closeRemind">X</i>
+              </div>
+              <div class="model-content">
+                <div class="content-remind">
+                  <i></i>
+                  <span>已提醒服务商收款</span>
+                </div>
+                <p>
+                  请您耐心等待服务商确认收款信息
+                  该服务商平均确认时长 <span>00:00:00</span>
+                </p>
+                <a class="content-btn"
+                   href="javascript:;" @click="closeRemind">我知道了</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="wrap" v-if="notTransfer">
+            <div class="modal">
+              <div class="model-close">
+                <i class="close-btn" @click="closeRemind">X</i>
+              </div>
+              <div class="model-content untransfer-content">
+                <div class="content-remind">
+                  <i class="untransfer-icon"></i>
+                  <span class="untransfer-text">
+                    若您尚未转账给服务商 请不要提醒服务商确认
+                  </span>
+                </div>
+                <p class="untransfer-p">以免造成充值失败和不必要的纠纷。</p>
+                <div class="untransfer-btnwarp">
+                  <a class="btn btn1"
+                     href="javascript:;" @click="closeRemind">确认已转账</a>
+                  <a class="btn btn2"
+                     href="javascript:;" @click="closeRemind">尚未转账</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--主体头部-->
+        <div class="main-header">
+          <div class="header-content">
+            <div class="content-sum">
+              <label for="number">
+                <span>支付的金额：</span>￥
+                <input type="text" id="number">
+              </label>
+              <label for="payer">
+                <span>付款人姓名：</span>
+                <input type="text" id="payer">
+              </label>
+              <div class="content-hint">
+                <div class="hint-icon"></div>
+                <p>温馨提示：您购买的<strong>USTD</strong>已被coinPay锁定，服务商无法提走，请放心支付</p>
+              </div>
+            </div>
+
+            <div class="pay-countdown" id="payCountdown">
+              <div class="countdown-icon"></div>
+              <span class="countdown-time" id="countDownTimer">15:00</span>
+              <span class="countdown-text">支付倒计时</span>
+            </div>
+            <div class="overtime" id="overTime">
+              <div class="countdown-icon"></div>
+              <span class="countdown-time">支付已超时</span>
+              <span class="countdown-text">请重新提交入金申请</span>
+            </div>
+            <div class="already-gathering" id="alreadyGathering">
+              <div class="countdown-icon"></div>
+              <span class="countdown-text">已提醒服务商收款</span>
+            </div>
+          </div>
+        </div>
+        <!--支付方式-->
+        <div class="main-golden">
+          <div class="golden-title">
+            <span class="title">支付方式</span>
+          </div>
+          <!--支付方法tab切换-->
+          <div class="golden-tab">
+            <a class="tab-item" href="javascript:;"
+               v-for="(item, index) in payment"
+            >{{item}}</a>
+          </div>
+
+          <div class="tab-content">
+            <div class="content-usermsg">
+              <div class="usermsg-hint">
+                <i class="hint-icon"></i>
+                <p class="hint-text">提示：请您
+                  <strong>转帐至服务商银行账户</strong></p>
+              </div>
+              <li class="usermsg-detail">
+                <label for="username">
+                  <span>用户名：</span>
+                  <input v-model="username" id="username">
+                </label>
+                <input type="button" class="copy" value="复制"
+                       data-clipboard-target="#username"/>
+              </li>
+              <li class="usermsg-detail">
+                <label for="bank-info">
+                  <span>银行信息：</span>
+                  <input v-model="bankInfo" id="bank-info">
+                </label>
+                <input type="button" class="copy" value="复制"
+                       data-clipboard-target="#bank-info"/>
+              </li>
+              <li class="usermsg-detail">
+                <label for="bank-account">
+                  <span>银行账号：</span>
+                  <input v-model="bankAccount" id="bank-account">
+                </label>
+                <input type="button" class="copy" value="复制"
+                       data-clipboard-target="#bank-account"/>
+              </li>
+            </div>
+            <div class="content-remark">
+              <div class="remark-detail">
+                <label class="detail" for="remark">
+                  <span>转账备注码：</span>
+                  <input type="text" id="remark"
+                         v-model="TransferNoteCode">
+                </label>
+                <p>转账时备注该号码，以便服务商快速确认。</p>
+              </div>
+            </div>
+            <!--银行种类-->
+            <div class="bank-types">
+              <label class="types-item" for="bank"
+                     v-for="(bank, index) in bankTypes"
+                     :class="index === selectedBankIndex?'bank-active': ''"
+                     @click="selectedBank(index, bank)"
+              >
+                <input type="text" id="bank" readonly="readonly" >
+              </label>
+            </div>
+
+            <div class="usermsg-hint">
+              <i class="hint-icon"></i>
+              <p class="hint-text">
+                提示：支付完成后请点击<strong>【提醒服务商收款】</strong>按钮。
+              </p>
+            </div>
+            <div class="hint-btn" v-if="whetherToRemind === false">
+              <input class="btn1"
+                     type="button" value="上一步">
+              <input class="btn2" @click="haveTransferHandle"
+                     type="button" value="提醒服务商收款">
+            </div>
+            <div class="hint-btn" v-if="whetherToRemind === true">
+              <input disabled="disabled"
+                     type="button" value="已提醒服务商收款">
+            </div>
+          </div>
+          <div class="tab-content">
+            <div class="content-usermsg">
+              <div class="usermsg-hint">
+                <i class="hint-icon"></i>
+                <p class="hint-text">提示：若交易金额
+                  <strong>大于￥50000</strong>，请使用
+                  <strong>银行转账</strong>方式付款。</p>
+              </div>
+            </div>
+            <!--支付宝二维码-->
+            <div class="alipayQRcode">
+              支付宝
+            </div>
+            <div class="usermsg-hint">
+              <i class="hint-icon"></i>
+              <p class="hint-text">
+                提示：支付完成后请点击<strong>【提醒服务商收款】</strong>按钮。
+              </p>
+            </div>
+            <div class="hint-btn alipay-btn">
+              <input class="btn1"
+                     type="button" value="上一步">
+              <input class="btn2" @click="notTransferHandle"
+                     type="button" value="提醒服务商收款">
+            </div>
+          </div>
+          <div class="tab-content">
+            <div class="content-usermsg">
+              <div class="usermsg-hint">
+                <i class="hint-icon"></i>
+                <p class="hint-text">提示：若交易金额
+                  <strong>大于￥50000</strong>，请使用
+                  <strong>银行转账</strong>方式付款。</p>
+              </div>
+            </div>
+            <!--支付宝二维码-->
+            <div class="alipayQRcode">
+              微信
+            </div>
+            <div class="usermsg-hint">
+              <i class="hint-icon"></i>
+              <p class="hint-text">
+                提示：支付完成后请点击<strong>【提醒服务商收款】</strong>按钮。
+              </p>
+            </div>
+            <div class="hint-btn alipay-btn">
+              <input class="btn1"
+                     type="button" value="上一步">
+              <input class="btn2" @click="notTransferHandle"
+                     type="button" value="提醒服务商收款">
+            </div>
+          </div>
+        </div>
+        <!--支付提醒-->
+        <div class="main-remind">
+          <div class="remind-title">
+            <span class="title">支付提醒</span>
+          </div>
+          <div class="remind-content">
+            <p>
+              1、请使用实名制的银行卡、支付宝、微信等进行转账。
+            </p>
+            <p>
+              2、若交易金额大于￥50000，
+              法定节假日或工作日17:00点以后汇款到银行卡可能造成汇款不及时，
+              请分批支付（单笔支付金额小于￥50000）保证及时到账，
+              若未及时到账，服务商有权拒绝。
+            </p>
+            <p>
+              3、凌晨12点到早上6点可能会导致服务商确认到账延迟，
+              请尽量在其他时间内转账，
+              在此时间内转账造成的确认延迟引发的结果，服务商概不负责。
+            </p>
+          </div>
+        </div>
+        <!--联合担保-->
+        <div class="main-guarantee">
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">联合担保</div>
+                <p class="detail-text">本次交易由平台和服 务商提供联合担保</p>
+              </div>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">保证金</div>
+                <p class="detail-text">
+                  服务商已向平台缴纳
+                  足额保证金
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">
+                  托管锁定
+                </div>
+                <p class="detail-text">
+                  服务商出售USDT已
+                  托管锁定在平台
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--底部-->
+  <div class="footer">
+    Copyrights © 2018. All Rights Reserved by -istpaytech.com
+  </div>
+</div>
+</body>
+</html>
+<script src="js/index.js"></script>
+<script src="js/cashier-desk.js"></script>
+<script src="js/cashier-desk_2.js"></script>

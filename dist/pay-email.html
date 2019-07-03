@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>付款邮件</title>
+  <!--<link rel="shortcut icon" href="images/ico/logo_2.png" type="image/x-icon"/>-->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/index.css">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <!--头部-->
+  <div class="header">
+    <div class="container">
+      <div class="header-logo">
+        <a href="./index.html" class="logo">NOWPAY</a>
+        <em class="logo-line"></em>
+        <div class="logo-text">{{companyName}}</div>
+      </div>
+    </div>
+    <div class="header-line">
+      <div class="container">
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
+  <!--主体-->
+  <div class="pay-email">
+    <form action="#">
+      <div class="container">
+        <div class="pay-email-header">
+          <div class="header-item">订单编号
+              <input v-model="orderId" />
+          </div>
+          <div class="header-item">付款截止日期
+            <input v-model="deadline" />
+          </div>
+          <div class="header-item">应付金额
+            <p><em>￥</em><input v-model="sumOwing" /></p>
+          </div>
+          <input class="header-item" type="button" value="立即付款"/>
+        </div>
+
+        <div class="pay-email-content">
+          <div class="content-detail">
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--底部-->
+  <div class="footer">
+    Copyrights © 2018. All Rights Reserved by -istpaytech.com
+  </div>
+</div>
+
+</body>
+</html>
+
+<script src="js/pay-email.js"></script>
+<script src="js/common.js"></script>

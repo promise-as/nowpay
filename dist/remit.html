@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>汇款</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/index.css">
+  <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <!--头部-->
+  <div class="header">
+    <div class="container">
+      <div class="header-logo">
+        <a href="./index.html" class="logo">NOWPAY</a>
+        <em class="logo-line"></em>
+        <div class="logo-text">全球领先的数字资产兑换平台</div>
+      </div>
+      <div class="header-phone">
+        <i class="phone-icon"></i>
+        <div class="phone-number">020-253 2564</div>
+      </div>
+    </div>
+    <div class="header-line">
+      <div class="container">
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
+  <!--主体-->
+  <div class="remit-main">
+    <div class="container">
+      <form action="#">
+        <!--汇款确认-->
+        <div class="main-golden">
+          <div class="golden-title">
+            <span class="title">数字资产汇款信息确认</span>
+          </div>
+          <div class="golden-content">
+            <div class="usermsg-hint">
+              <i class="hint-icon"></i>
+              <p class="hint-text">
+                提示：请输入您准确填写以下信息，便于快速完成数字资产汇款信息
+              </p>
+            </div>
+            <li>
+              <label for="golden1">
+                <span><em>*</em>姓名：</span>
+                <input type="text" id="golden1" v-model="name">
+              </label>
+            </li>
+            <li>
+              <label for="golden2">
+                <span><em>*</em>交易账号：</span>
+                <input type="text" id="golden2" v-model="tradingAccount">
+              </label>
+            </li>
+            <li>
+              <label for="golden3">
+                <span><em>*</em>邮箱：</span>
+                <input type="text" id="golden3" v-model="eMail">
+              </label>
+            </li>
+            <li>
+              <label for="golden4">
+                <span><em>*</em>手机：</span>
+                <input type="text" id="golden4" v-model="mobile">
+              </label>
+            </li>
+            <li>
+              <label for="golden5">
+                <span><em>*</em>存入金额：</span>
+                <strong>$</strong>
+                <input type="text" id="golden5">
+              </label>
+            </li>
+            <li>
+              <label for="golden6">
+                <span>支付的金额：</span>
+                <strong>￥</strong>
+                <input type="text" id="golden6" value="6000.00">
+              </label>
+            </li>
+            <li>
+              <span>服务器：</span>
+              <div class="server">
+                <div class="server-item">
+                  <label for="server1">
+                    <input type="radio" id="server1" class="radio" name="ser" checked="checked">
+                    <i></i>
+                  </label>
+                  <span>服务器一</span>
+                </div>
+                <div class="server-item">
+                  <label for="server2">
+                    <input type="radio" id="server2" class="radio" name="ser">
+                    <i></i>
+                  </label>
+                  <span>服务器二</span>
+                </div>
+                <div class="server-item">
+                  <label for="server3">
+                    <input type="radio" id="server3" class="radio" name="ser">
+                    <i></i>
+                  </label>
+                  <span>服务器三</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <input type="button" value="确认" class="submit">
+            </li>
+          </div>
+        </div>
+        <!--联合担保-->
+        <div class="main-guarantee">
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">联合担保</div>
+                <p class="detail-text">本次交易由平台和服 务商提供联合担保</p>
+              </div>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">保证金</div>
+                <p class="detail-text">
+                  服务商已向平台缴纳
+                  足额保证金
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="guarantee-item">
+            <div class="item-content">
+              <div class="content-icon"></div>
+              <div class="content-detail">
+                <div class="detail-title">
+                  托管锁定
+                </div>
+                <p class="detail-text">
+                  服务商出售USDT已
+                  托管锁定在平台
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!--底部-->
+  <div class="footer">
+    Copyrights © 2018. All Rights Reserved by -istpaytech.com
+  </div>
+</div>
+
+</body>
+</html>
+
+<script src="js/remit.js"></script>
